@@ -154,6 +154,8 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="vertex.h" />
+    <ClInclude Include="world_options.h" />
+    <ClInclude Include="world_va.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dream_sphere.cpp" />
@@ -165,6 +167,8 @@
     </ClCompile>
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="vertex.cpp" />
+    <ClCompile Include="world_options.cpp" />
+    <ClCompile Include="world_va.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
