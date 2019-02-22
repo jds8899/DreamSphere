@@ -7,6 +7,8 @@
 #include <plx/prim.h>
 
 #include "vertex.h"
+#include "world_va.h"
+#include "world_options.h"
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 
