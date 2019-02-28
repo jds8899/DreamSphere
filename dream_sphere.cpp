@@ -25,16 +25,15 @@ game_cxt gcxt = MENU;
 vector_t** wverts;
 vector_t** wnorms;
 vector_t** wtexs;
-WorldOptions wo(2, 2);
+WorldOptions wo(10, 2);
 unsigned stripn;
 unsigned strips;
 
 void vertex_submit(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos = false) {
 	int flags = eos ? PVR_CMD_VERTEX_EOL : PVR_CMD_VERTEX;
 
-	printf("x:%f, y:%f, z:%f\n", vert.x, vert.y, vert.z);
+	//printf("flag: %d, x:%f, y:%f, z:%f\n", flags, vert.x, vert.y, vert.z);
 	plx_vert_fnp(flags, vert.x, vert.y, vert.z, 1, 1, 1, 1);
-	//for (;;) {}
 }
 
 void menu_cxt_init() {
@@ -55,11 +54,12 @@ void game_cxt_init() {
 	//wnorms	= (vector_t**)malloc(stripn * sizeof(vector_t*));
 	//wtexs	= (vector_t**)malloc(stripn * sizeof(vector_t*));
 
+	plx_mat_identity();
+	plx_mat3d_apply_all();
+
 	for (unsigned i = 0; i < stripn; ++i) {
 		vector_t* trans_verts = (vector_t*)malloc(strips * sizeof(vector_t));
 
-		plx_mat_identity();
-		plx_mat3d_apply_all();
 		plx_mat_transform(verts[i], trans_verts, strips, 4 * sizeof(float));
 
 		printf("x:%f, y:%f, z:%f\n", verts[i][0].x, verts[i][0].y, verts[i][0].z);
@@ -102,6 +102,7 @@ void menu_cxt_render() {
 
 void game_cxt_render() {
 	pvr_list_begin(PVR_LIST_OP_POLY);
+	pvr_prim(&nontextured_header, sizeof(pvr_poly_hdr_t));
 
 	vector_t n = {0,0,0,0};
 
@@ -140,10 +141,10 @@ void init() {
 	// Setup Parallax Polygon Header
 	pvr_poly_cxt_t nontextured_context;
 	pvr_poly_cxt_col(&nontextured_context, PVR_LIST_OP_POLY);
-	nontextured_context.gen.culling = PVR_CULLING_CW;
+	nontextured_context.gen.culling = PVR_CULLING_NONE;
 	pvr_poly_compile(&nontextured_header, &nontextured_context);
 
-	pvr_set_bg_color(1.0, 0.0, 0.0);
+	pvr_set_bg_color(0.0, 0.0, 0.0);
 
 	// Camera
 	plx_mat3d_mode(PLX_MAT_PROJECTION);
@@ -153,7 +154,7 @@ void init() {
 	plx_mat3d_mode(PLX_MAT_MODELVIEW);
 	plx_mat3d_identity();
 
-	point_t  camera_pos	= {0.0f, 0.0f, 5.0f, 1.0f};
+	point_t  camera_pos	= {0.0f, 1.0f, 5.0f, 1.0f};
 	point_t  lookat		= {0.0f, 0.0f, 0.0f, 1.0f};
 	vector_t up			= {0.0f, 1.0f, 0.0f, 0.0f};
 	plx_mat3d_lookat(&camera_pos, &lookat, &up);
@@ -172,22 +173,7 @@ void update() {
 	
 	pvr_scene_begin();
 
-	//game_cxt_render();
-
-	pvr_list_begin(PVR_LIST_OP_POLY);
-
-	vector_t n = {0,0,0,0};
-	
-	pvr_prim(&nontextured_header, sizeof(pvr_poly_hdr_t));
-
-	for(unsigned i = 0; i < stripn; ++i) {
-		for(unsigned j = 0; j < strips - 1; ++j) {
-			vertex_submit(n, n, wverts[i][j], n, n);
-		}
-		vertex_submit(n, n, wverts[i][strips - 1], n, n, true);
-	}
-
-	pvr_list_finish();
+	game_cxt_render();
 
 	pvr_scene_finish();
 }
