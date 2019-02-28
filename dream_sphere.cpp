@@ -34,7 +34,7 @@ void vertex_submit(vector_t light, vector_t light_vert, vector_t vert, vector_t 
 
 	printf("x:%f, y:%f, z:%f\n", vert.x, vert.y, vert.z);
 	plx_vert_fnp(flags, vert.x, vert.y, vert.z, 1, 1, 1, 1);
-	for (;;) {}
+	//for (;;) {}
 }
 
 void menu_cxt_init() {
@@ -177,6 +177,8 @@ void update() {
 	pvr_list_begin(PVR_LIST_OP_POLY);
 
 	vector_t n = {0,0,0,0};
+	
+	pvr_prim(&nontextured_header, sizeof(pvr_poly_hdr_t));
 
 	for(unsigned i = 0; i < stripn; ++i) {
 		for(unsigned j = 0; j < strips - 1; ++j) {
