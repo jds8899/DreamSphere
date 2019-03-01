@@ -151,14 +151,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="game_cxt.h" />
+    <ClInclude Include="menu_cxt.h" />
+    <ClInclude Include="pause_cxt.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="triangle.h" />
+    <ClInclude Include="vec_utils.h" />
     <ClInclude Include="vertex.h" />
     <ClInclude Include="world_options.h" />
     <ClInclude Include="world_va.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dream_sphere.cpp" />
+    <ClCompile Include="game_cxt.cpp" />
+    <ClCompile Include="menu_cxt.cpp" />
+    <ClCompile Include="pause_cxt.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -166,6 +173,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="vec_utils.cpp" />
     <ClCompile Include="vertex.cpp" />
     <ClCompile Include="world_options.cpp" />
     <ClCompile Include="world_va.cpp" />
