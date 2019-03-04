@@ -3,6 +3,8 @@
 # Copyright (C)2001-2004 Dan Potter
 #
 
+CDI_RESULT = dream_sphere.cdi
+
 # Put the filename of the output binary here
 TARGET = dream_sphere.elf
 
@@ -16,15 +18,23 @@ KOS_ROMDISK_DIR = romdisk
 
 # The rm-elf step is to remove the target before building, to force the
 # re-creation of the rom disk.
-all: rm-elf $(TARGET)
+all: rm-elf $(CDI_RESULT)
 
 include $(KOS_BASE)/Makefile.rules
+
+# temporarily building to parent folder. will use subdirs later
+$(CDI_RESULT): $(TARGET) 1st_read.bin
+	mkisofs -C 0,11702 -V DreamSphere -G IP.BIN -joliet -rock -l -o ../dream_sphere.iso .
+	cdi4dc/cdi4dc.exe ../dream_sphere.iso ../dream_sphere.cdi
 
 clean:
 	-rm -f $(TARGET) $(OBJS) romdisk.* 1st_read.bin output.bin
 
 rm-elf:
 	-rm -f $(TARGET) romdisk.*
+
+1st_read.bin: $(TARGET)
+	bash ./ds_1st_read.sh $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(KOS_CC) $(KOS_CFLAGS) $(KOS_LDFLAGS) -o $(TARGET) $(KOS_START) \
