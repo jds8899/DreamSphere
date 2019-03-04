@@ -1,18 +1,13 @@
 #include "world_options.h"
 
+WorldOptions* world_options_init(unsigned size, unsigned tess) {
+	WorldOptions* ret	= (WorldOptions*)malloc(sizeof(WorldOptions));
+	ret->size			= size;
+	ret->tess			= tess;
 
-WorldOptions::WorldOptions(unsigned size, unsigned tess) :
-	size_(size), 
-	tess_(tess) {}
-
-
-WorldOptions::~WorldOptions() {
+	return ret;
 }
 
-unsigned WorldOptions::size() {
-	return size_;
-}
-
-unsigned WorldOptions::tess() {
-	return tess_;
+void world_options_cleanup(WorldOptions* wo) {
+	free(wo);
 }

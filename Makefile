@@ -8,7 +8,7 @@ TARGET = dream_sphere.elf
 
 # List all of your C files here, but change the extension to ".o"
 # Include "romdisk.o" if you want a rom disk.
-OBJS = dream_sphere.o romdisk.o vertex.o world_options.o world_va.o
+OBJS = dream_sphere.o romdisk.o vertex.o world_options.o world_va.o game_cxt.o vec_utils.o menu_cxt.o pause_cxt.o
 
 # If you define this, the Makefile.rules will create a romdisk.o for you
 # from the named dir.
