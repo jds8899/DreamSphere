@@ -12,3 +12,9 @@
 DreamSphere\.vcxproj\.user
 
 *.iso
+
+bin/
+
+build/
+
+obj/
