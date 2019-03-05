@@ -151,32 +151,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="game_cxt.h" />
-    <ClInclude Include="menu_cxt.h" />
-    <ClInclude Include="pause_cxt.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="triangle.h" />
-    <ClInclude Include="vec_utils.h" />
-    <ClInclude Include="vertex.h" />
-    <ClInclude Include="world_options.h" />
-    <ClInclude Include="world_va.h" />
+    <ClInclude Include="include\game_cxt.h" />
+    <ClInclude Include="include\menu_cxt.h" />
+    <ClInclude Include="include\pause_cxt.h" />
+    <ClInclude Include="include\vec_utils.h" />
+    <ClInclude Include="include\vertex.h" />
+    <ClInclude Include="include\world_options.h" />
+    <ClInclude Include="include\world_va.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dream_sphere.cpp" />
-    <ClCompile Include="game_cxt.cpp" />
-    <ClCompile Include="menu_cxt.cpp" />
-    <ClCompile Include="pause_cxt.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="triangle.cpp" />
-    <ClCompile Include="vec_utils.cpp" />
-    <ClCompile Include="vertex.cpp" />
-    <ClCompile Include="world_options.cpp" />
-    <ClCompile Include="world_va.cpp" />
+    <ClCompile Include="src\dream_sphere.cpp" />
+    <ClCompile Include="src\game_cxt.cpp" />
+    <ClCompile Include="src\menu_cxt.cpp" />
+    <ClCompile Include="src\pause_cxt.cpp" />
+    <ClCompile Include="src\vec_utils.cpp" />
+    <ClCompile Include="src\vertex.cpp" />
+    <ClCompile Include="src\world_options.cpp" />
+    <ClCompile Include="src\world_va.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ds_1st_read.sh" />
+    <None Include="IP.BIN" />
+    <None Include="Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

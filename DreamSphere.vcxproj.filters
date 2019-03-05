@@ -15,64 +15,59 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="include\game_cxt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vertex.h">
+    <ClInclude Include="include\menu_cxt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="triangle.h">
+    <ClInclude Include="include\pause_cxt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="world_options.h">
+    <ClInclude Include="include\vec_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="world_va.h">
+    <ClInclude Include="include\vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game_cxt.h">
+    <ClInclude Include="include\world_options.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vec_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="menu_cxt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pause_cxt.h">
+    <ClInclude Include="include\world_va.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="src\dream_sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dream_sphere.cpp">
+    <ClCompile Include="src\game_cxt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vertex.cpp">
+    <ClCompile Include="src\menu_cxt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="triangle.cpp">
+    <ClCompile Include="src\pause_cxt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="world_options.cpp">
+    <ClCompile Include="src\vec_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="world_va.cpp">
+    <ClCompile Include="src\world_options.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game_cxt.cpp">
+    <ClCompile Include="src\vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vec_utils.cpp">
+    <ClCompile Include="src\world_va.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="menu_cxt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="pause_cxt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+    <None Include="ds_1st_read.sh" />
+    <None Include="IP.BIN">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
