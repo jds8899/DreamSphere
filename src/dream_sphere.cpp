@@ -8,8 +8,11 @@
 #include "menu_cxt.h"
 #include "pause_cxt.h"
 #include "obj_model.h"
+#include "action.h"
 
 #define DEBUG_GAME
+
+#define DEBUG_CONTROLS
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 
@@ -117,6 +120,41 @@ int main(int argc, char *argv[]) {
 	print_tiny_attrib(obj->attrib);
 	obj_cleanup(obj);
 	obj = 0;
+
+#ifdef DEBUG_CONTROLS
+	bool exitProgram = false;
+
+	while (!exitProgram)
+	{
+		maple_device_t *controller = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+		cont_state_t *controllerState = (cont_state_t*)maple_dev_status(controller);
+		if (controllerState->buttons & CONT_START)
+			exitProgram = true;
+
+		SonicAction_t act1 = get_action(controllerState);
+
+		switch (act1) {
+		case ACT_MOVEFORWARD:
+			printf("ACT_MOVEFORWARD\n");
+			break;
+		case ACT_TURNLEFT:
+			printf("ACT_TURNLEFT\n");
+			break;
+		case ACT_TURNRIGHT:
+			printf("ACT_TURNRIGHT\n");
+			break;
+		case ACT_JUMP:
+			printf("ACT_JUMP\n");
+			break;
+		case ACT_NONE:
+			//printf("ACT_INVALID\n");
+			break;
+		default:
+			//printf("unknown");
+			break;
+		}
+	}
+#endif //End DEBUG_CONTROLS
 
 	init();
 
