@@ -36,6 +36,12 @@
     <ClInclude Include="include\world_va.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\obj_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\tinyobj_loader_c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dream_sphere.cpp">
@@ -60,6 +66,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\world_va.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\obj_model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tinyobj_loader_c.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
