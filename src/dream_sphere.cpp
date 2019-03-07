@@ -12,7 +12,7 @@
 
 #define DEBUG_GAME
 
-#define DEBUG_CONTROLS
+//#define DEBUG_CONTROLS
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 
@@ -114,12 +114,14 @@ void cleanup() {
 
 int main(int argc, char *argv[]) {
 
-	ObjModel* obj = obj_get("/rd/cube.obj");
+	//ObjModel* obj = obj_get("/rd/cube.obj");
 
-	if (obj == 0) return 1;
-	print_tiny_attrib(obj->attrib);
-	obj_cleanup(obj);
-	obj = 0;
+	//if (obj == 0) return 1;
+	//print_tiny_attrib(obj->attrib);
+	//obj_cleanup(obj);
+	//obj = 0;
+
+	//for (;;) {}
 
 #ifdef DEBUG_CONTROLS
 	bool exitProgram = false;
