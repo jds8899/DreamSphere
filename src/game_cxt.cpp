@@ -1,5 +1,6 @@
 #include "game_cxt.h"
 #include "obj_model.h"
+#include "obj_renderer.h"
 
 // WORLD GLOBALS
 WorldVA* world;
