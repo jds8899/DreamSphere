@@ -20,7 +20,6 @@ enum game_cxt {MENU, GAME, PAUSE};
 
 // GAME STATE GLOBALS
 bool done = false;
-pvr_poly_hdr_t nontextured_header;
 game_cxt gcxt = MENU;
 
 void init() {
@@ -28,11 +27,6 @@ void init() {
 	pvr_init_defaults();
 	plx_mat3d_init();
 
-	// Setup Parallax Polygon Header
-	pvr_poly_cxt_t nontextured_context;
-	pvr_poly_cxt_col(&nontextured_context, PVR_LIST_OP_POLY);
-	nontextured_context.gen.culling = PVR_CULLING_NONE;
-	pvr_poly_compile(&nontextured_header, &nontextured_context);
 
 	pvr_set_bg_color(0.0, 0.0, 0.0);
 
@@ -63,7 +57,7 @@ void update() {
 	
 	pvr_scene_begin();
 
-	game_cxt_render(&nontextured_header);
+	game_cxt_render();
 
 	pvr_scene_finish();
 }
@@ -90,7 +84,7 @@ void update() {
 		menu_cxt_render();
 		break;
 	case GAME:
-		game_cxt_render(&nontextured_header);
+		game_cxt_render();
 		break;
 	case PAUSE:
 		pause_cxt_render();

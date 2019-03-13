@@ -9,8 +9,27 @@ WorldOptions* wo;
 unsigned stripn;
 unsigned strips;
 
+const unsigned WORLD_SIZE = 10;
+const unsigned WORLD_TESS = 2;
+
+pvr_poly_hdr_t nontextured_header;
+
+pvr_poly_hdr_t textured_header;
+pvr_ptr_t floor_tex;
+
+void floor_tex_init() {
+	floor_tex = pvr_mem_malloc(512 * 512 * 2);
+	png_to_texture("/rd/checker1.png", floor_tex, PNG_NO_ALPHA);
+}
+
 void game_cxt_init() {
-	wo		= world_options_init(10, 2);
+	floor_tex_init();
+
+	// Setup Parallax Polygon Headers
+	nontextured_header = create_nontextured_header();
+	textured_header = create_textured_header(floor_tex, 512, 512);
+
+	wo		= world_options_init(WORLD_SIZE, WORLD_TESS);
 	world	= world_init(wo);
 
 	vector_t** verts	= world->verts;
@@ -40,12 +59,12 @@ void game_cxt_init() {
 
 		wnorms[i] = (vector_t*)malloc(strips * sizeof(vector_t));
 		wtexs[i]  = (vector_t*)malloc(strips * sizeof(vector_t));
-		/*
+
 		for (unsigned j = 0; j < strips; ++j) {
 			wnorms[i][j] = norms[i][j];
 			wtexs[i][j]  = texs[i][j];
+			//printf("u:%f, v:%f\n", wtexs[i][j].x, wtexs[i][j].y);
 		}
-		*/
 	}
 }
 
@@ -54,20 +73,26 @@ void game_cxt_prep() {
 	//plx_mat3d_apply_all();
 }
 
-void game_cxt_render(pvr_poly_hdr_t* hdr) {
+void game_cxt_render() {
 	pvr_list_begin(PVR_LIST_OP_POLY);
-	pvr_prim(hdr, sizeof(pvr_poly_hdr_t));
+	pvr_prim(&textured_header, sizeof(pvr_poly_hdr_t));
 
 	vector_t n = {0,0,0,0};
 
 	for(unsigned i = 0; i < stripn; ++i) {
 		for(unsigned j = 0; j < strips - 1; ++j) {
-			vertex_submit(n, n, wverts[i][j], n, n);
+			vertex_submit(n, n, wverts[i][j], n, wtexs[i][j]);
 		}
-		vertex_submit(n, n, wverts[i][strips - 1], n, n, true);
+		vertex_submit(n, n, wverts[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
 	pvr_list_finish();
+
+	for(unsigned i = 0; i < stripn; ++i) {
+		for(unsigned j = 0; j < strips - 1; ++j) {
+			wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)WORLD_SIZE);
+		}
+	}
 }
 
 void game_cxt_cleanup() {

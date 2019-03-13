@@ -34,7 +34,7 @@ OBJS += $(OBJDIR)/romdisk.o
 
 # Include and lib parameters
 CXXFLAGS += -I$(INCLUDEDIR)
-LIBS_USED = -lparallax -lmp3 -lm $(KOS_LIBS)
+LIBS_USED = -lparallax -lpng -lz -lm $(KOS_LIBS)
 
 # output targets
 ELF_TARGET = $(addprefix $(BUILDDIR)/, $(ELF_NAME))

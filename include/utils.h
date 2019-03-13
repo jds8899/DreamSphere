@@ -7,4 +7,10 @@
 
 void vertex_submit(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos = false);
 
+pvr_poly_hdr_t create_nontextured_header();
+
+pvr_poly_hdr_t create_textured_header(pvr_ptr_t tex, unsigned height, unsigned width);
+
+float fmod(float a, float b);
+
 #endif
