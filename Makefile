@@ -59,6 +59,8 @@ $(CDI_TARGET): $(ELF_TARGET) $(BUILDDIR)/1st_read.bin
 	mkisofs -C 0,11702 -V DreamSphere -G IP.BIN -joliet -rock -l -o $(BINDIR)/dream_sphere.iso $(BUILDDIR)
 	cdi4dc/cdi4dc.exe $(BINDIR)/dream_sphere.iso $(BINDIR)/dream_sphere.cdi
 
+buildonly: $(ELF_TARGET) $(BUILDDIR)/1st_read.bin
+
 clean:
 	-rm -f $(BINDIR)/* $(BUILDDIR)/* $(OBJDIR)/*
 

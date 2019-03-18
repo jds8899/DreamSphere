@@ -1,5 +1,7 @@
 
 #include "vec_utils.h"
+#include <kos/vector.h>
+#include <plx/matrix.h>
 
 void vertex_submit(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos) {
 	int flags = eos ? PVR_CMD_VERTEX_EOL : PVR_CMD_VERTEX;
@@ -13,4 +15,19 @@ void vertex_submit_black(vector_t light, vector_t light_vert, vector_t vert, vec
 
 	//printf("flag: %d, x:%f, y:%f, z:%f\n", flags, vert.x, vert.y, vert.z);
 	plx_vert_fnp(flags, vert.x, vert.y, vert.z, .5, .5, .5, .5);
+}
+
+void print_current_matr(char * label)
+{
+	matrix_t* m = (matrix_t*)malloc(sizeof(matrix_t));
+	plx_mat3d_store(m);
+	printf(label);
+	printf(":\n");
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 3; j++) {
+			printf("%f ", m[i][j]);
+		}
+		printf("\n");
+	}
+	free(m);
 }
