@@ -75,6 +75,19 @@ ObjModel* obj_get(char const* path) {
 	return obj;
 }
 
+point_t obj_vertex(ObjModel * obj, int vertIndex)
+{
+	//since verts stores in triplets in array, multiply index by 3
+	int i = vertIndex * 3;
+	float x = obj->attrib.vertices[i],
+		y = obj->attrib.vertices[i + 1],
+		z = obj->attrib.vertices[i + 2];
+
+	point_t v = { x,y,z,0 };
+
+	return v;
+}
+
 void obj_cleanup(ObjModel* obj) {
 	tinyobj_attrib_free(&obj->attrib);
 	tinyobj_shapes_free(obj->shapes, obj->num_shapes);
