@@ -3,15 +3,25 @@
 #include <kos.h>
 #include <plx/matrix.h>
 #include <plx/prim.h>
+#include <stdio.h>
+#include <kos/vector.h>
 
 #include "vec_utils.h"
 
 void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr) {
 
-	plx_mat3d_push();
-	plx_mat3d_identity();
-	plx_mat3d_translate(0, 0, -2);
-	//plx_mat3d_apply_all();
+	//push new matrix to model matrix stack to apply
+	//custom transformations to object verts.
+	/*plx_mat3d_push();
+	plx_mat3d_identity();*/
+
+	//PLACEHOLDER: apply xforms to model matrix for object
+	//plx_mat3d_translate(0, 0, 2);
+
+	//now, apply projection, world, and model matrices to PVR matrix.
+	//does not affect matrices in PLX matrix registers, but will
+	//affect the transformations on points for this model.
+	plx_mat3d_apply_all();
 
 	vector_t n = { 0,0,0,0 };
 
@@ -24,12 +34,13 @@ void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr) {
 		//pvr_prim(hdr, sizeof(pvr_poly_hdr_t));
 
 		// Loop through all verticies of this face
+		printf("face:\n");
 		for (int j = faceoffset; j < faceoffset + vertCnt; j++) {
 			tinyobj_vertex_index_t cur = obj->attrib.faces[j];
 
-			float x = obj->attrib.vertices[cur.v_idx],
-				y = obj->attrib.vertices[cur.v_idx + 1],
-				z = obj->attrib.vertices[cur.v_idx + 2];
+			float x = obj->attrib.vertices[cur.v_idx *3],
+				y = obj->attrib.vertices[cur.v_idx*3 + 1],
+				z = obj->attrib.vertices[cur.v_idx*3 + 2];
 
 			mat_trans_single(x, y, z);
 
@@ -47,6 +58,7 @@ void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr) {
 		faceoffset += vertCnt;
 	}
 
-	plx_mat3d_pop();
+	//erase temporary changes to model matrix
+	//plx_mat3d_pop();
 }
 
