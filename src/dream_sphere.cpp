@@ -8,8 +8,12 @@
 #include "menu_cxt.h"
 #include "pause_cxt.h"
 #include "obj_model.h"
+#include "action.h"
+#include "vec_utils.h"
 
 #define DEBUG_GAME
+
+//#define DEBUG_CONTROLS
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 
@@ -47,6 +51,16 @@ void init() {
 	point_t  camera_pos	= {0.0f, 1.0f, 5.0f, 1.0f};
 	point_t  lookat		= {0.0f, 0.0f, 0.0f, 1.0f};
 	vector_t up			= {0.0f, 1.0f, 0.0f, 0.0f};
+
+	//test diagonal view downward of plane/cube
+	/*point_t  camera_pos = { 0.0f, 5.0f, 5.0f, 1.0f };
+	point_t  lookat = { 0.0f, 0.0f, 0.0f, 1.0f };
+	vector_t up = { 0.0f, 1.0f, -1.0f, 0.0f };*/
+
+	//test cam pos from above
+	/*point_t  camera_pos = { 0.0f, 20.0f, 0.0f, 1.0f };
+	point_t  lookat = { 0.0f, 0.0f, 0.0f, 1.0f };
+	vector_t up = { 0.0f, 0.0f, -1.0f, 0.0f };*/
 	plx_mat3d_lookat(&camera_pos, &lookat, &up);
 
 #ifdef DEBUG_GAME
@@ -111,12 +125,49 @@ void cleanup() {
 
 int main(int argc, char *argv[]) {
 
-	ObjModel* obj = obj_get("/rd/cube.obj");
+	//ObjModel* obj = obj_get("/rd/cube.obj");
 
-	if (obj == 0) return 1;
-	print_tiny_attrib(obj->attrib);
-	obj_cleanup(obj);
-	obj = 0;
+	//if (obj == 0) return 1;
+	//print_tiny_attrib(obj->attrib);
+	//obj_cleanup(obj);
+	//obj = 0;
+
+	//for (;;) {}
+
+#ifdef DEBUG_CONTROLS
+	bool exitProgram = false;
+
+	while (!exitProgram)
+	{
+		maple_device_t *controller = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+		cont_state_t *controllerState = (cont_state_t*)maple_dev_status(controller);
+		if (controllerState->buttons & CONT_START)
+			exitProgram = true;
+
+		SonicAction_t act1 = get_action(controllerState);
+
+		switch (act1) {
+		case ACT_MOVEFORWARD:
+			printf("ACT_MOVEFORWARD\n");
+			break;
+		case ACT_TURNLEFT:
+			printf("ACT_TURNLEFT\n");
+			break;
+		case ACT_TURNRIGHT:
+			printf("ACT_TURNRIGHT\n");
+			break;
+		case ACT_JUMP:
+			printf("ACT_JUMP\n");
+			break;
+		case ACT_NONE:
+			//printf("ACT_INVALID\n");
+			break;
+		default:
+			//printf("unknown");
+			break;
+		}
+	}
+#endif //End DEBUG_CONTROLS
 
 	init();
 

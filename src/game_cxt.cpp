@@ -1,4 +1,6 @@
 #include "game_cxt.h"
+#include "obj_model.h"
+#include "obj_renderer.h"
 
 // WORLD GLOBALS
 WorldVA* world;
@@ -8,6 +10,21 @@ vector_t** wtexs;
 WorldOptions* wo;
 unsigned stripn;
 unsigned strips;
+
+// OBJ model information
+
+// Model indices in loaded OBJ array
+//#define CUBE_MODEL 0
+//#define SPHERE_MODEL 1
+
+// Loaded OBJ models. Can be reused to display multiple objects, perhaps?
+//ObjModel** loadedModels;
+
+// Locations of spheres
+//vector_t** sphereLocations;
+
+ObjModel* cube;
+vector_t cubePos;
 
 void game_cxt_init() {
 	wo		= world_options_init(10, 2);
@@ -47,6 +64,10 @@ void game_cxt_init() {
 		}
 		*/
 	}
+
+	//globals
+	cube = obj_get("/rd/cube.obj");
+	cubePos = { 0,0,0,1 };
 }
 
 void game_cxt_prep() {
@@ -67,6 +88,8 @@ void game_cxt_render(pvr_poly_hdr_t* hdr) {
 		vertex_submit(n, n, wverts[i][strips - 1], n, n, true);
 	}
 
+	obj_render(cube, hdr);
+
 	pvr_list_finish();
 }
 
@@ -82,4 +105,6 @@ void game_cxt_cleanup() {
 	free(wverts);
 	free(wnorms);
 	free(wtexs);
+
+	obj_cleanup(cube);
 }

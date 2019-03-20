@@ -8,6 +8,7 @@ Wrapper and struct over tinyobj OBJ file loading.
 
 #define TINYOBJ_LOADER_C_IMPLEMENTATION
 #include "tinyobj_loader_c.h"
+#include <kos/vector.h>
 
 typedef struct {
 	tinyobj_attrib_t attrib;
@@ -36,6 +37,15 @@ Retrieve and construct an object model from a given file path.
 Caller responsible for freeing resources.
 */
 ObjModel* obj_get(char const* path);
+
+/*
+Given a vertex's index, return the vertex object in a
+vector_t struct.
+
+@param obj Object containing model info
+@param vertIndex index of vertex
+*/
+point_t obj_vertex(ObjModel* obj, int vertIndex);
 
 /*
 Free object resources.

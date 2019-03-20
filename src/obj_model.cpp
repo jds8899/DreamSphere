@@ -75,6 +75,19 @@ ObjModel* obj_get(char const* path) {
 	return obj;
 }
 
+point_t obj_vertex(ObjModel * obj, int vertIndex)
+{
+	//since verts stores in triplets in array, multiply index by 3
+	int i = vertIndex * 3;
+	float x = obj->attrib.vertices[i],
+		y = obj->attrib.vertices[i + 1],
+		z = obj->attrib.vertices[i + 2];
+
+	point_t v = { x,y,z,0 };
+
+	return v;
+}
+
 void obj_cleanup(ObjModel* obj) {
 	tinyobj_attrib_free(&obj->attrib);
 	tinyobj_shapes_free(obj->shapes, obj->num_shapes);
@@ -114,23 +127,48 @@ void print_tiny_attrib(tinyobj_attrib_t a) {
 	);
 
 	printf("verts: [");
-	for (int i = 0; i < a.num_vertices; i++) {
-		printf("%f,", a.vertices[i]);
+	//verts stores in triples at each index
+	for (int i = 0; i < a.num_vertices*3; i+=3) {
+		printf("\n\tv%i:(x:%f,y:%f,z:%f), ", i/3+1, a.vertices[i], a.vertices[i+1], a.vertices[i+2]);
 	}
 
-	printf("]\nnormals: [");
-	for (int i = 0; i < a.num_normals; i++) {
-		printf("%f,", a.normals[i]);
+	printf("\n]\nnormals: [");
+	for (int i = 0; i < a.num_normals*3; i+=3) {
+		printf("\n\tn%i:(x:%f,y:%f,z:%f), ", i/3+1, a.normals[i], a.normals[i + 1], a.normals[i + 2]);
 	}
 
-	printf("]\ntexcoords: [");
-	for (int i = 0; i < a.num_texcoords; i++) {
+	printf("\n]\ntexcoords: [");
+	for (int i = 0; i < a.num_texcoords*3; i+=3) {
+		printf("\n\tt%i:(u:%f,v:%f,w:%f), ", i/3+1, a.texcoords[i], a.texcoords[i + 1], a.texcoords[i + 2]);
+	}
+
+	printf("\n]\nfaces: [");
+
+	/*for (int i = 0; i < a.num_faces; i++) {
 		printf("%f,", a.texcoords[i]);
+	}*/
+
+	int faceNum = 1;
+	for (int i = 0; i < a.num_faces; ) {
+		
+		int vertCntForFace = a.face_num_verts[faceNum-1];
+		printf("\n\tf%i:[",faceNum);
+
+		for (int j = i; j < i+vertCntForFace; j++) {
+			tinyobj_vertex_index_t v = a.faces[j];
+			printf("(%i/%i/%i), ", v.v_idx+1, v.vn_idx + 1, v.vt_idx + 1);
+		}
+
+		i += vertCntForFace;
+		faceNum++;
+
+		printf("]");
 	}
 
-	printf("]\n");
+	printf("\n]");
 
-	//incomplete
+
+	//todo: Materials?
 
 	printf("}\n");
 }

@@ -7,4 +7,14 @@
 
 void vertex_submit(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos = false);
 
+void vertex_submit_black(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos = false);
+
+/*
+Loads and prints current working matrix used by parallax.
+
+If pvr flag set to true, instead loads the direct matrix used by
+PVR, which is wrapped by parallax.
+*/
+void print_current_matr(char* label, bool pvr=true);
+
 #endif
