@@ -17,4 +17,10 @@ PVR, which is wrapped by parallax.
 */
 void print_current_matr(char* label, bool pvr=true);
 
+pvr_poly_hdr_t create_nontextured_header();
+
+pvr_poly_hdr_t create_textured_header(pvr_ptr_t tex, unsigned height, unsigned width);
+
+float fmod(float a, float b);
+
 #endif

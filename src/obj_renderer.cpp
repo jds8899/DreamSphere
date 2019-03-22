@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <kos/vector.h>
 
-#include "vec_utils.h"
+#include "utils.h"
 
 void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr) {
 
@@ -31,7 +31,7 @@ void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr) {
 		int vertCnt = obj->attrib.face_num_verts[i];
 
 		//pvr_list_begin(PVR_LIST_OP_POLY);
-		//pvr_prim(hdr, sizeof(pvr_poly_hdr_t));
+		pvr_prim(hdr, sizeof(pvr_poly_hdr_t));
 
 		// Loop through all verticies of this face
 		printf("face:\n");

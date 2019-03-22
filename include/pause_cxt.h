@@ -5,7 +5,7 @@
 #include <plx/matrix.h>
 #include <plx/prim.h>
 
-#include "vec_utils.h"
+#include "utils.h"
 
 void pause_cxt_init();
 

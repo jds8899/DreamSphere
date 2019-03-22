@@ -152,11 +152,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\action.h" />
+    <ClInclude Include="include\game_logic.h" />
     <ClInclude Include="include\game_cxt.h" />
     <ClInclude Include="include\menu_cxt.h" />
     <ClInclude Include="include\obj_model.h" />
+    <ClInclude Include="include\obj_renderer.h" />
     <ClInclude Include="include\pause_cxt.h" />
-    <ClInclude Include="include\vec_utils.h" />
+    <ClInclude Include="include\utils.h" />
     <ClInclude Include="include\vertex.h" />
     <ClInclude Include="include\world_options.h" />
     <ClInclude Include="include\world_va.h" />
@@ -164,13 +166,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\action.cpp" />
+    <ClCompile Include="src\game_logic.cpp" />
     <ClCompile Include="src\dream_sphere.cpp" />
     <ClCompile Include="src\game_cxt.cpp" />
     <ClCompile Include="src\menu_cxt.cpp" />
     <ClCompile Include="src\obj_model.cpp" />
+    <ClCompile Include="src\obj_renderer.cpp" />
     <ClCompile Include="src\pause_cxt.cpp" />
     <ClCompile Include="src\tinyobj_loader_c.cpp" />
-    <ClCompile Include="src\vec_utils.cpp" />
+    <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vertex.cpp" />
     <ClCompile Include="src\world_options.cpp" />
     <ClCompile Include="src\world_va.cpp" />
