@@ -11,6 +11,8 @@ WorldOptions* wo;
 unsigned stripn;
 unsigned strips;
 
+vector_t** trans;
+
 // OBJ model information
 
 // Model indices in loaded OBJ array
@@ -29,6 +31,8 @@ vector_t cubePos;
 const unsigned WORLD_SIZE = 10;
 const unsigned WORLD_TESS = 2;
 
+float deg;
+
 pvr_poly_hdr_t nontextured_header;
 
 pvr_poly_hdr_t textured_header;
@@ -46,6 +50,8 @@ void game_cxt_init() {
 	nontextured_header = create_nontextured_header();
 	textured_header = create_textured_header(floor_tex, 512, 512);
 
+	deg = (90.0f / turn_rate)/* * (3.14f/180.0f)*/;
+
 	wo		= world_options_init(WORLD_SIZE, WORLD_TESS);
 	world	= world_init(wo);
 
@@ -59,6 +65,7 @@ void game_cxt_init() {
 	strips = vert_per_edge * 2 + 2;
 
 	wverts	= (vector_t**)malloc(stripn * sizeof(vector_t*));
+	trans	= (vector_t**)malloc(stripn * sizeof(vector_t*));
 	wnorms	= (vector_t**)malloc(stripn * sizeof(vector_t*));
 	wtexs	= (vector_t**)malloc(stripn * sizeof(vector_t*));
 
@@ -66,13 +73,15 @@ void game_cxt_init() {
 	plx_mat3d_apply_all();
 
 	for (unsigned i = 0; i < stripn; ++i) {
-		vector_t* trans_verts = (vector_t*)malloc(strips * sizeof(vector_t));
+		//vector_t* trans_verts = (vector_t*)malloc(strips * sizeof(vector_t));
+		wverts[i] = (vector_t*)malloc(strips * sizeof(vector_t));
+		trans[i] = (vector_t*)malloc(strips * sizeof(vector_t));
 
-		plx_mat_transform(verts[i], trans_verts, strips, 4 * sizeof(float));
+		//plx_mat_transform(verts[i], trans_verts, strips, 4 * sizeof(float));
 
 		//printf("x:%f, y:%f, z:%f\n", verts[i][0].x, verts[i][0].y, verts[i][0].z);
 		//printf("x:%f, y:%f, z:%f\n", trans_verts[0].x, trans_verts[0].y, trans_verts[0].z);
-		wverts[i] = trans_verts;
+		//wverts[i] = trans_verts;
 
 		wnorms[i] = (vector_t*)malloc(strips * sizeof(vector_t));
 		wtexs[i]  = (vector_t*)malloc(strips * sizeof(vector_t));
@@ -80,6 +89,7 @@ void game_cxt_init() {
 		for (unsigned j = 0; j < strips; ++j) {
 			wnorms[i][j] = norms[i][j];
 			wtexs[i][j]  = texs[i][j];
+			wverts[i][j] = verts[i][j];
 			//printf("u:%f, v:%f\n", wtexs[i][j].x, wtexs[i][j].y);
 		}
 	}
@@ -94,26 +104,65 @@ void game_cxt_prep() {
 	//plx_mat3d_apply_all();
 }
 
+int curr_turn = 0;
+
 void game_cxt_render() {
 	pvr_list_begin(PVR_LIST_OP_POLY);
 	pvr_prim(&textured_header, sizeof(pvr_poly_hdr_t));
 
 	vector_t n = {0,0,0,0};
 
-	for(unsigned i = 0; i < stripn; ++i) {
-		for(unsigned j = 0; j < strips - 1; ++j) {
-			vertex_submit(n, n, wverts[i][j], n, wtexs[i][j]);
-		}
-		vertex_submit(n, n, wverts[i][strips - 1], n, wtexs[i][strips - 1], true);
+	//TODO: May want to consolidate some of these loops
+	if (turning) {
+		if (left) curr_turn += deg;
+		else	 curr_turn -= deg;
+	}
+	plx_mat3d_push();
+	plx_mat_identity();
+	plx_mat3d_rotate((float)curr_turn, 0.0f, 1.0f, 0.0f);
+	plx_mat_identity();
+	plx_mat3d_apply_all();
+	
+	for (unsigned i = 0; i < stripn; ++i) {
+		plx_mat_transform(wverts[i], trans[i], strips, 4 * sizeof(float));
 	}
 
-	obj_render(cube, &nontextured_header);
+	plx_mat3d_pop();
+
+	if (curr_turn % 90 == 0 && turning) {
+		turning = false;
+	}
+
+
+	for(unsigned i = 0; i < stripn; ++i) {
+		for(unsigned j = 0; j < strips - 1; ++j) {
+			vertex_submit(n, n, trans[i][j], n, wtexs[i][j]);
+		}
+		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
+	}
+
+	//obj_render(cube, &nontextured_header);
 
 	pvr_list_finish();
 
-	for(unsigned i = 0; i < stripn; ++i) {
-		for(unsigned j = 0; j < strips - 1; ++j) {
-			wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)WORLD_SIZE);
+	if (!turning) {
+		for (unsigned i = 0; i < stripn; ++i) {
+			for (unsigned j = 0; j < strips - 1; ++j) {
+				switch (curr_dir) {
+				case NORTH:
+					wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)WORLD_SIZE);
+					break;
+				case SOUTH:
+					wtexs[i][j].y = fmod((wtexs[i][j].y + (speed * base_velocity)), (float)WORLD_SIZE);
+					break;
+				case EAST:
+					wtexs[i][j].x = fmod((wtexs[i][j].x - (speed * base_velocity)), (float)WORLD_SIZE);
+					break;
+				case WEST:
+					wtexs[i][j].x = fmod((wtexs[i][j].x + (speed * base_velocity)), (float)WORLD_SIZE);
+					break;
+				}
+			}
 		}
 	}
 }

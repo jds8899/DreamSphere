@@ -1,4 +1,5 @@
 #include <kos.h>
+#include <time.h>
 
 #include <plx/matrix.h>
 #include <plx/prim.h>
@@ -9,11 +10,10 @@
 #include "pause_cxt.h"
 #include "obj_model.h"
 #include "action.h"
+#include "game_logic.h"
 #include "utils.h"
 
 #define DEBUG_GAME
-
-//#define DEBUG_CONTROLS
 
 KOS_INIT_FLAGS(INIT_DEFAULT);
 
@@ -117,6 +117,14 @@ void cleanup() {
 #endif
 }
 
+#define MS_PER_FRAME 33
+#define BUFFER_DURATION 5
+int frame_cd = 0;
+
+SonicAction_t act1			= ACT_NONE;
+SonicAction_t held_action	= ACT_NONE;
+//int input_buff[BUFFER_DURATION];
+
 int main(int argc, char *argv[]) {
 
 	//ObjModel* obj = obj_get("/rd/cube.obj");
@@ -128,45 +136,60 @@ int main(int argc, char *argv[]) {
 
 	//for (;;) {}
 
-#ifdef DEBUG_CONTROLS
 	bool exitProgram = false;
+	maple_device_t *controller = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+	init();
+	clock_t start, end, diff;
 
 	while (!exitProgram)
 	{
-		maple_device_t *controller = maple_enum_type(0, MAPLE_FUNC_CONTROLLER);
+		start = clock();
 		cont_state_t *controllerState = (cont_state_t*)maple_dev_status(controller);
 		if (controllerState->buttons & CONT_START)
 			exitProgram = true;
 
-		SonicAction_t act1 = get_action(controllerState);
+		act1 = get_action(controllerState);
+		printf("held %d, act1: %d\n", held_action, act1);
 
-		switch (act1) {
-		case ACT_MOVEFORWARD:
-			printf("ACT_MOVEFORWARD\n");
-			break;
-		case ACT_TURNLEFT:
-			printf("ACT_TURNLEFT\n");
-			break;
-		case ACT_TURNRIGHT:
-			printf("ACT_TURNRIGHT\n");
-			break;
-		case ACT_JUMP:
-			printf("ACT_JUMP\n");
-			break;
-		case ACT_NONE:
-			//printf("ACT_INVALID\n");
-			break;
-		default:
-			//printf("unknown");
-			break;
+		if (act1 != held_action) {
+			switch (act1) {
+			case ACT_MOVEFORWARD:
+				//printf("ACT_MOVEFORWARD\n");
+				break;
+			case ACT_TURNLEFT:
+				//printf("ACT_TURNLEFT\n");
+				turn(LEFT);
+				break;
+			case ACT_TURNRIGHT:
+				turn(RIGHT);
+				//printf("ACT_TURNRIGHT\n");
+				break;
+			case ACT_JUMP:
+				//printf("ACT_JUMP\n");
+				break;
+			case ACT_NONE:
+				//printf("ACT_INVALID\n");
+				break;
+			default:
+				//printf("unknown");
+				break;
+			}
 		}
-	}
-#endif //End DEBUG_CONTROLS
-
-	init();
-
-	while (!done) {
+/*
+		if(frame_cd == 0) {
+			frame_cd = BUFFER_DURATION;
+			held_action = act1;
+		}
+		else {
+			--frame_cd;
+		}
+		*/
 		update();
+		end = clock();
+		diff = start - end;
+		printf("start: %lu, end: %lu\n", start, end);
+		held_action = act1;
+		timer_spin_sleep(MS_PER_FRAME - diff);
 	}
 
 	cleanup();
