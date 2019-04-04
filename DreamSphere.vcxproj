@@ -154,6 +154,7 @@
     <ClInclude Include="include\action.h" />
     <ClInclude Include="include\game_logic.h" />
     <ClInclude Include="include\game_cxt.h" />
+    <ClInclude Include="include\level_data.h" />
     <ClInclude Include="include\menu_cxt.h" />
     <ClInclude Include="include\obj_model.h" />
     <ClInclude Include="include\obj_renderer.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="src\game_logic.cpp" />
     <ClCompile Include="src\dream_sphere.cpp" />
     <ClCompile Include="src\game_cxt.cpp" />
+    <ClCompile Include="src\level_data.cpp" />
     <ClCompile Include="src\menu_cxt.cpp" />
     <ClCompile Include="src\obj_model.cpp" />
     <ClCompile Include="src\obj_renderer.cpp" />
