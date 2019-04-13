@@ -12,6 +12,10 @@ extern direction_t curr_dir;
 
 extern float speed;
 
+extern float obj_dim;
+
+extern float xpos, zpos;
+
 extern bool turning;
 
 extern bool left;
@@ -22,5 +26,7 @@ const float base_velocity = .5;
 const float turn_rate = 30;
 
 void turn(int direction);
+
+void update_pos();
 
 #endif

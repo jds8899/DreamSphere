@@ -13,8 +13,6 @@
 #include "game_logic.h"
 #include "utils.h"
 
-#define DEBUG_GAME
-
 KOS_INIT_FLAGS(INIT_DEFAULT);
 
 extern uint8 romdisk[];
@@ -149,7 +147,7 @@ int main(int argc, char *argv[]) {
 			exitProgram = true;
 
 		act1 = get_action(controllerState);
-		printf("held %d, act1: %d\n", held_action, act1);
+		//printf("held %d, act1: %d\n", held_action, act1);
 
 		if (act1 != held_action) {
 			switch (act1) {
@@ -175,19 +173,11 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 		}
-/*
-		if(frame_cd == 0) {
-			frame_cd = BUFFER_DURATION;
-			held_action = act1;
-		}
-		else {
-			--frame_cd;
-		}
-		*/
+
 		update();
 		end = clock();
 		diff = start - end;
-		printf("start: %lu, end: %lu\n", start, end);
+		//printf("start: %lu, end: %lu\n", start, end);
 		held_action = act1;
 		timer_spin_sleep(MS_PER_FRAME - diff);
 	}

@@ -8,6 +8,7 @@ enum ObjectType_t {BLUE, RED, BUMP, RING, NONE};
 
 typedef struct {
 	WorldOptions* wo;
+	unsigned int obj_dim;
 	ObjectType_t** layout;
 } LevelData_t;
 

@@ -11,6 +11,8 @@
 #include "world_options.h"
 #include "game_logic.h"
 
+#define DEBUG_GAME
+
 void game_cxt_init();
 
 void game_cxt_prep();

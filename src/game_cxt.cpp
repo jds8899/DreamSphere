@@ -1,6 +1,7 @@
 #include "game_cxt.h"
 #include "obj_model.h"
 #include "obj_renderer.h"
+#include "level_data.h"
 
 // WORLD GLOBALS
 WorldVA* world;
@@ -28,10 +29,10 @@ vector_t** trans;
 ObjModel* cube;
 vector_t cubePos;
 
-const unsigned WORLD_SIZE = 10;
-const unsigned WORLD_TESS = 2;
-
 float deg;
+
+LevelData_t* lebel;
+vector_t**	 obj_ofsts;
 
 pvr_poly_hdr_t nontextured_header;
 
@@ -50,10 +51,18 @@ void game_cxt_init() {
 	nontextured_header = create_nontextured_header();
 	textured_header = create_textured_header(floor_tex, 512, 512);
 
-	deg = (90.0f / turn_rate)/* * (3.14f/180.0f)*/;
+	deg = (90.0f / turn_rate);
 
-	wo		= world_options_init(WORLD_SIZE, WORLD_TESS);
-	world	= world_init(wo);
+#ifdef DEBUG_GAME
+
+	lebel   = read_level("/rd/test_level");
+	obj_dim = lebel->obj_dim;
+	xpos    = obj_dim / 2;
+	zpos    = obj_dim / 2;
+
+#endif
+
+	world	= world_init(lebel->wo);
 
 	vector_t** verts	= world->verts;
 	vector_t** norms	= world->norms;
@@ -146,20 +155,21 @@ void game_cxt_render() {
 	pvr_list_finish();
 
 	if (!turning) {
+		update_pos();
 		for (unsigned i = 0; i < stripn; ++i) {
 			for (unsigned j = 0; j < strips - 1; ++j) {
 				switch (curr_dir) {
 				case NORTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)WORLD_SIZE);
+					wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)lebel->wo->size);
 					break;
 				case SOUTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y + (speed * base_velocity)), (float)WORLD_SIZE);
+					wtexs[i][j].y = fmod((wtexs[i][j].y + (speed * base_velocity)), (float)lebel->wo->size);
 					break;
 				case EAST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x - (speed * base_velocity)), (float)WORLD_SIZE);
+					wtexs[i][j].x = fmod((wtexs[i][j].x - (speed * base_velocity)), (float)lebel->wo->size);
 					break;
 				case WEST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x + (speed * base_velocity)), (float)WORLD_SIZE);
+					wtexs[i][j].x = fmod((wtexs[i][j].x + (speed * base_velocity)), (float)lebel->wo->size);
 					break;
 				}
 			}
