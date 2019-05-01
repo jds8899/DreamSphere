@@ -154,7 +154,10 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
-	obj_render(cube, &object_header);
+	vector_t scal = { 0.5,0.5,0.5,0.0 };
+	point_t tran = { 0.0,1,0,0 };
+	vector_t rot = { 45.0, 0, 45.0,  0 };
+	obj_render(cube, &object_header, tran, rot, scal);
 
 	pvr_list_finish();
 
