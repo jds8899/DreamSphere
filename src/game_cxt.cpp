@@ -35,6 +35,7 @@ LevelData_t* lebel;
 vector_t**	 obj_ofsts;
 
 pvr_poly_hdr_t nontextured_header;
+pvr_poly_hdr_t object_header;
 
 pvr_poly_hdr_t textured_header;
 pvr_ptr_t floor_tex;
@@ -48,7 +49,10 @@ void game_cxt_init() {
 	floor_tex_init();
 
 	// Setup Parallax Polygon Headers
-	nontextured_header = create_nontextured_header();
+	nontextured_header = create_nontextured_header(true);
+
+	object_header = create_nontextured_header(false);
+
 	textured_header = create_textured_header(floor_tex, 512, 512);
 
 	deg = (90.0f / turn_rate);
@@ -150,7 +154,7 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
-	//obj_render(cube, &nontextured_header);
+	obj_render(cube, &object_header);
 
 	pvr_list_finish();
 
