@@ -29,8 +29,6 @@ vector_t** trans;
 ObjModel* cube;
 vector_t cubePos;
 
-float deg;
-
 LevelData_t* lebel;
 vector_t**	 obj_ofsts;
 
@@ -55,14 +53,12 @@ void game_cxt_init() {
 
 	textured_header = create_textured_header(floor_tex, 512, 512);
 
-	deg = (90.0f / turn_rate);
-
 #ifdef DEBUG_GAME
 
 	lebel   = read_level("/rd/test_level");
-	obj_dim = lebel->obj_dim;
-	xpos    = obj_dim / 2;
-	zpos    = obj_dim / 2;
+	level_width = lebel->obj_dim;
+	xpos    = level_width / 2;
+	zpos    = level_width / 2;
 
 #endif
 
@@ -117,8 +113,6 @@ void game_cxt_prep() {
 	//plx_mat3d_apply_all();
 }
 
-int curr_turn = 0;
-
 void game_cxt_render() {
 	pvr_list_begin(PVR_LIST_OP_POLY);
 	pvr_prim(&textured_header, sizeof(pvr_poly_hdr_t));
@@ -127,12 +121,12 @@ void game_cxt_render() {
 
 	//TODO: May want to consolidate some of these loops
 	if (turning) {
-		if (left) curr_turn += deg;
-		else	 curr_turn -= deg;
+		if (left) sonic_turn_degrees += turn_degrees_per_frame;
+		else	 sonic_turn_degrees -= turn_degrees_per_frame;
 	}
 	plx_mat3d_push();
 	plx_mat_identity();
-	plx_mat3d_rotate((float)curr_turn, 0.0f, 1.0f, 0.0f);
+	plx_mat3d_rotate((float)sonic_turn_degrees, 0.0f, 1.0f, 0.0f);
 	plx_mat_identity();
 	plx_mat3d_apply_all();
 	
@@ -142,7 +136,7 @@ void game_cxt_render() {
 
 	plx_mat3d_pop();
 
-	if (curr_turn % 90 == 0 && turning) {
+	if (sonic_turn_degrees % 90 == 0 && turning) {
 		turning = false;
 	}
 

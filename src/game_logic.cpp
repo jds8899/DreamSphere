@@ -2,13 +2,17 @@
 
 direction_t curr_dir = NORTH;
 vector_t sonic_direction = { 0.0, 0.0, 1.0, 0.0 }; //Initially "north", along +z axis
+int sonic_turn_degrees = 0;
 float speed   = .1;
 bool turning  = false;
 bool left     = false;
 bool jumping = false;
-float obj_dim = 0.0f;
+float level_width = 0.0f;
 float xpos    = 0.0f;
 float zpos    = 0.0f;
+
+float turn_rate = 30;
+float turn_degrees_per_frame = (90.0f / turn_rate);
 
 void turn(int direction) {
 	left = (direction == LEFT) ? true : false;

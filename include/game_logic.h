@@ -16,11 +16,15 @@ extern direction_t curr_dir;
 //Used for rendering objects
 extern vector_t sonic_direction;
 
+//Temporary variable to aid with refactoring turning.
+//This is sonic's current degrees turned from his starting direction.
+extern int sonic_turn_degrees;
+
 //Sonic's speed
 extern float speed;
 
 //Level grid length
-extern float obj_dim;
+extern float level_width;
 
 //Sonic's position
 extern float xpos, zpos;
@@ -38,7 +42,10 @@ extern bool jumping;
 const float base_velocity = .5;
 
 // This is number of frames to turn 90 degrees
-const float turn_rate = 30;
+extern float turn_rate;
+
+//Number of degrees sonic turns per frame
+extern float turn_degrees_per_frame;
 
 void turn(int direction);
 
