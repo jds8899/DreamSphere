@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <math.h>
 
 void vertex_submit_black(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos) {
 	int flags = eos ? PVR_CMD_VERTEX_EOL : PVR_CMD_VERTEX;
@@ -76,4 +77,14 @@ int floor(float x) {
 
 float fmod(float a, float b) {
 	return (a - b * (float)floor(a / b));
+}
+
+vector_t rotateAlongY(vector_t vec, float degrees)
+{
+	double rads = (M_PI / 180.0) * degrees;
+
+	double xRot = (cos(rads) * vec.x) - (sin(rads) * vec.z);
+	double zRot = (sin(rads) * vec.x) + (cos(rads) * vec.z);
+
+	return { xRot, vec.y, zRot, vec.w };
 }

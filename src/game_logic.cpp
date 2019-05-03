@@ -1,9 +1,11 @@
 #include "game_logic.h"
 
 direction_t curr_dir = NORTH;
+vector_t sonic_direction = { 0.0, 0.0, 1.0, 0.0 }; //Initially "north", along +z axis
 float speed   = .1;
 bool turning  = false;
 bool left     = false;
+bool jumping = false;
 float obj_dim = 0.0f;
 float xpos    = 0.0f;
 float zpos    = 0.0f;
