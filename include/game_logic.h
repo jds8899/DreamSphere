@@ -22,13 +22,10 @@ typedef struct{
 	//This is sonic's current degrees turned from his starting direction.
 	int sonic_turn_degrees;
 
-	//Sonic's speed
+	//Sonic's speed, in level space
 	float speed;
 
-	//Level grid length
-	float level_width;
-
-	//Sonic's position
+	//Sonic's position, in level space
 	float xpos, zpos;
 
 	//If sonic is currently turning
@@ -40,14 +37,23 @@ typedef struct{
 	//If sonic is currently midair
 	bool jumping;
 
-	//?
-	float base_velocity;
-
 	// This is number of frames to turn 90 degrees
 	float turn_rate;
 
 	//Number of degrees sonic turns per frame
 	float turn_degrees_per_frame;
+
+	//Level grid length
+	float level_width;
+
+	//Width of the display plane
+	float display_plane_width;
+
+	//Conversion from "level" units to "world" units.
+	//Level space is 1 unit = 1 grid space of blue sphere
+	//World space is coordinate space used for display.
+	float level_to_world_space;
+
 } GameState;
 
 extern GameState* gstate;

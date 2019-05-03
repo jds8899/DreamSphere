@@ -59,8 +59,15 @@ void game_cxt_init() {
 
 	lebel   = read_level("/rd/test_level");
 	gstate->level_width = lebel->obj_dim;
-	gstate->xpos    = gstate->level_width / 2;
-	gstate->zpos    = gstate->level_width / 2;
+
+	//cast to int to round down to a grid location.
+	//TODO: add a start point/direction to level file format
+	gstate->xpos    = (int)gstate->level_width / 2;
+	gstate->zpos    = (int)gstate->level_width / 2;
+
+	//set width of plane, and determine scale of level space to world space
+	gstate->display_plane_width = lebel->wo->size;
+	gstate->level_to_world_space = (gstate->display_plane_width) / (gstate->level_width);
 
 #endif
 
@@ -163,16 +170,16 @@ void game_cxt_render() {
 			for (unsigned j = 0; j < strips - 1; ++j) {
 				switch (gstate->curr_dir) {
 				case NORTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y - (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].y = fmod((wtexs[i][j].y - (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case SOUTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y + (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].y = fmod((wtexs[i][j].y + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case EAST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x - (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x - (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case WEST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x + (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				}
 			}

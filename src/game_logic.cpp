@@ -13,13 +13,15 @@ void game_state_init()
 	gstate->turning = false;
 	gstate->left = false;
 	gstate->jumping = false;
-	gstate->base_velocity = 0.5;
-	gstate->level_width = 0.0f;
 	gstate->xpos = 0.0f;
 	gstate->zpos = 0.0f;
 
 	gstate->turn_rate = 30;
 	gstate->turn_degrees_per_frame = (90.0f / gstate->turn_rate);
+
+	gstate->level_width = 0.0f;
+	gstate->display_plane_width = 0.0f;
+	gstate->level_to_world_space = 0.0f;
 }
 
 void game_state_cleanup()
@@ -36,23 +38,24 @@ void turn(int direction) {
 }
 
 void update_pos() {
-	float dist = (gstate->speed * gstate->base_velocity);
+
 	switch (gstate->curr_dir) {
 	case NORTH:
-		gstate->zpos += dist;
+		gstate->zpos += gstate->speed;
 		break;
 	case SOUTH:
-		gstate->zpos -= dist;
+		gstate->zpos -= gstate->speed;
 		break;
 	case EAST:
-		gstate->xpos += dist;
+		gstate->xpos += gstate->speed;
 		break;
 	case WEST:
-		gstate->xpos -= dist;
+		gstate->xpos -= gstate->speed;
 		break;
 	}
-	if (gstate->zpos < 0)  gstate->zpos += 30;
-	if (gstate->zpos > 30) gstate->zpos -= 30;
-	if (gstate->xpos < 0)  gstate->xpos += 30;
-	if (gstate->xpos > 30) gstate->xpos -= 30;
+
+	if (gstate->zpos < 0)  gstate->zpos += gstate->level_width;
+	if (gstate->zpos > gstate->level_width) gstate->zpos -= gstate->level_width;
+	if (gstate->xpos < 0)  gstate->xpos += gstate->level_width;
+	if (gstate->xpos > gstate->level_width) gstate->xpos -= gstate->level_width;
 }
