@@ -44,6 +44,8 @@ void floor_tex_init() {
 }
 
 void game_cxt_init() {
+	game_state_init();
+
 	floor_tex_init();
 
 	// Setup Parallax Polygon Headers
@@ -56,9 +58,9 @@ void game_cxt_init() {
 #ifdef DEBUG_GAME
 
 	lebel   = read_level("/rd/test_level");
-	level_width = lebel->obj_dim;
-	xpos    = level_width / 2;
-	zpos    = level_width / 2;
+	gstate->level_width = lebel->obj_dim;
+	gstate->xpos    = gstate->level_width / 2;
+	gstate->zpos    = gstate->level_width / 2;
 
 #endif
 
@@ -120,13 +122,13 @@ void game_cxt_render() {
 	vector_t n = {0,0,0,0};
 
 	//TODO: May want to consolidate some of these loops
-	if (turning) {
-		if (left) sonic_turn_degrees += turn_degrees_per_frame;
-		else	 sonic_turn_degrees -= turn_degrees_per_frame;
+	if (gstate->turning) {
+		if (gstate->left) gstate->sonic_turn_degrees += gstate->turn_degrees_per_frame;
+		else	 gstate->sonic_turn_degrees -= gstate->turn_degrees_per_frame;
 	}
 	plx_mat3d_push();
 	plx_mat_identity();
-	plx_mat3d_rotate((float)sonic_turn_degrees, 0.0f, 1.0f, 0.0f);
+	plx_mat3d_rotate((float)gstate->sonic_turn_degrees, 0.0f, 1.0f, 0.0f);
 	plx_mat_identity();
 	plx_mat3d_apply_all();
 	
@@ -136,8 +138,8 @@ void game_cxt_render() {
 
 	plx_mat3d_pop();
 
-	if (sonic_turn_degrees % 90 == 0 && turning) {
-		turning = false;
+	if (gstate->sonic_turn_degrees % 90 == 0 && gstate->turning) {
+		gstate->turning = false;
 	}
 
 
@@ -155,22 +157,22 @@ void game_cxt_render() {
 
 	pvr_list_finish();
 
-	if (!turning) {
+	if (!gstate->turning) {
 		update_pos();
 		for (unsigned i = 0; i < stripn; ++i) {
 			for (unsigned j = 0; j < strips - 1; ++j) {
-				switch (curr_dir) {
+				switch (gstate->curr_dir) {
 				case NORTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].y = fmod((wtexs[i][j].y - (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
 					break;
 				case SOUTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y + (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].y = fmod((wtexs[i][j].y + (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
 					break;
 				case EAST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x - (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x - (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
 					break;
 				case WEST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x + (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x + (gstate->speed * gstate->base_velocity)), (float)lebel->wo->size);
 					break;
 				}
 			}
@@ -192,4 +194,6 @@ void game_cxt_cleanup() {
 	free(wtexs);
 
 	obj_cleanup(cube);
+
+	game_state_cleanup();
 }

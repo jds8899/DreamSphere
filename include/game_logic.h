@@ -9,46 +9,71 @@
 
 enum direction_t{NORTH, EAST, SOUTH, WEST, END};
 
-//Sonic's current direction along the level grid
-extern direction_t curr_dir;
+typedef struct{
 
-//Sonic's current direction in the world (even while turning).
-//Used for rendering objects
-extern vector_t sonic_direction;
+	//Sonic's current direction along the level grid
+	direction_t curr_dir;
 
-//Temporary variable to aid with refactoring turning.
-//This is sonic's current degrees turned from his starting direction.
-extern int sonic_turn_degrees;
+	//Sonic's current direction in the world (even while turning).
+	//Used for rendering objects
+	vector_t sonic_direction;
 
-//Sonic's speed
-extern float speed;
+	//Temporary variable to aid with refactoring turning.
+	//This is sonic's current degrees turned from his starting direction.
+	int sonic_turn_degrees;
 
-//Level grid length
-extern float level_width;
+	//Sonic's speed
+	float speed;
 
-//Sonic's position
-extern float xpos, zpos;
+	//Level grid length
+	float level_width;
 
-//If sonic is currently turning
-extern bool turning;
+	//Sonic's position
+	float xpos, zpos;
 
-//If sonic is currently turning LEFT. Otherwise right
-extern bool left;
+	//If sonic is currently turning
+	bool turning;
 
-//If sonic is currently midair
-extern bool jumping;
+	//If sonic is currently turning LEFT. Otherwise right
+	bool left;
 
-//?
-const float base_velocity = .5;
+	//If sonic is currently midair
+	bool jumping;
 
-// This is number of frames to turn 90 degrees
-extern float turn_rate;
+	//?
+	float base_velocity;
 
-//Number of degrees sonic turns per frame
-extern float turn_degrees_per_frame;
+	// This is number of frames to turn 90 degrees
+	float turn_rate;
 
+	//Number of degrees sonic turns per frame
+	float turn_degrees_per_frame;
+} GameState;
+
+extern GameState* gstate;
+
+/*
+Initialize singleton game state struct.
+Currently, values are all hard coded in this function.
+Can be changed later.
+*/
+void game_state_init();
+
+/*
+Clean up game state resources.
+*/
+void game_state_cleanup();
+
+/*
+Turn sonic to face a certain direction.
+
+@param direction -1 or 1 to indicate left/right
+*/
 void turn(int direction);
 
+/*
+Update sonic's position based on his current speed and orientation
+*/
 void update_pos();
 
 #endif
