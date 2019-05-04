@@ -157,9 +157,32 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
+
+	printf("pos in level space (%f, %f)\n", gstate->xpos, gstate->zpos);
+
 	vector_t scal = { 0.5,0.5,0.5,0.0 };
-	point_t tran = { 0.0,1,0,0 };
-	vector_t rot = { 45.0, 0, 45.0,  0 };
+
+	float x0 = 0.0, z0 = 0.0;
+
+	float objXpos = (x0 - gstate->xpos); 
+	float objYpos = 0.5;
+	float objZpos = (z0 - gstate->zpos);
+
+	float half = gstate->level_width / 2;
+
+	if (objXpos < (-1)*half) objXpos += gstate->level_width;
+	if (objXpos > half) objXpos -= gstate->level_width;
+
+	if (objZpos < (-1)*half) objZpos += gstate->level_width;
+	if (objZpos > half) objZpos -= gstate->level_width;
+
+	objXpos*=gstate->level_to_world_space;
+	objZpos *= gstate->level_to_world_space;
+	objZpos *= (-1);
+
+	point_t tran = { objXpos,objYpos,objZpos , 0 };
+//	tran = { 0,0,0,0 };
+	vector_t rot = { 0.0, 0, 0.0,  0 };
 	obj_render(cube, &object_header, tran, rot, scal);
 
 	pvr_list_finish();

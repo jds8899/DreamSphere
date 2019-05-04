@@ -60,8 +60,6 @@ void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr) {
 
 void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr, point_t trans, vector_t rotate, vector_t scale)
 {
-	print_current_matr("Cur PVR before push: ", true);
-
 	//assuming we are on PLX_MAT_MODELVIEW, perform transforms on a
 	//new PLX matrix
 	plx_mat3d_push();
