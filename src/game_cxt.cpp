@@ -131,8 +131,14 @@ void game_cxt_render() {
 	//TODO: May want to consolidate some of these loops
 	if (gstate->turning) {
 		//Turn plane RIGHT if sonic turning left. LEFT if sonic turning right
-		if (gstate->left) gstate->sonic_turn_degrees -= gstate->turn_degrees_per_frame;
-		else	 gstate->sonic_turn_degrees += gstate->turn_degrees_per_frame;
+		if (gstate->left) {
+			gstate->sonic_turn_degrees -= gstate->turn_degrees_per_frame;
+			gstate->sonic_direction = rotateAlongY(gstate->sonic_direction, (-1)*gstate->turn_degrees_per_frame);
+		}
+		else {
+			gstate->sonic_turn_degrees += gstate->turn_degrees_per_frame;
+			gstate->sonic_direction = rotateAlongY(gstate->sonic_direction, gstate->turn_degrees_per_frame);
+		}
 	}
 	plx_mat3d_push();
 	plx_mat_identity();
@@ -160,6 +166,7 @@ void game_cxt_render() {
 
 
 	printf("pos in level space (%f, %f)\n", gstate->xpos, gstate->zpos);
+	printf("sonic turn degrees %i\n", gstate->sonic_turn_degrees);
 
 	vector_t scal = { 0.5,0.5,0.5,0.0 };
 
@@ -182,8 +189,10 @@ void game_cxt_render() {
 	objZpos *= (-1);
 
 	point_t tran = { objXpos,objYpos,objZpos , 0 };
-//	tran = { 0,0,0,0 };
-	vector_t rot = { 0.0, 0, 0.0,  0 };
+	tran = rotateAlongY(tran, (-1)*gstate->sonic_turn_degrees);
+
+	//tran = { 0,0,0,0 };
+	vector_t rot = { 0.0, (-1)*gstate->sonic_turn_degrees, 0.0,  0 };
 	obj_render(cube, &object_header, tran, rot, scal);
 
 	pvr_list_finish();
