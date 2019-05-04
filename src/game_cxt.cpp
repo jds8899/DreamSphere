@@ -130,8 +130,9 @@ void game_cxt_render() {
 
 	//TODO: May want to consolidate some of these loops
 	if (gstate->turning) {
-		if (gstate->left) gstate->sonic_turn_degrees += gstate->turn_degrees_per_frame;
-		else	 gstate->sonic_turn_degrees -= gstate->turn_degrees_per_frame;
+		//Turn plane RIGHT if sonic turning left. LEFT if sonic turning right
+		if (gstate->left) gstate->sonic_turn_degrees -= gstate->turn_degrees_per_frame;
+		else	 gstate->sonic_turn_degrees += gstate->turn_degrees_per_frame;
 	}
 	plx_mat3d_push();
 	plx_mat_identity();
@@ -199,10 +200,10 @@ void game_cxt_render() {
 					wtexs[i][j].y = fmod((wtexs[i][j].y + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case EAST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x - (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case WEST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x - (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				}
 			}
