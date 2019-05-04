@@ -2,6 +2,7 @@
 #include "obj_model.h"
 #include "obj_renderer.h"
 #include "level_data.h"
+#include "world_object.h"
 
 // WORLD GLOBALS
 WorldVA* world;
@@ -26,8 +27,7 @@ vector_t** trans;
 // Locations of spheres
 //vector_t** sphereLocations;
 
-ObjModel* cube;
-vector_t cubePos;
+WorldObject* cubeObj;
 
 LevelData_t* lebel;
 vector_t**	 obj_ofsts;
@@ -113,8 +113,13 @@ void game_cxt_init() {
 	}
 
 	//globals
-	cube = obj_get("/rd/cube.obj");
-	cubePos = { 0,0,0,1 };
+	ObjModel* cube = obj_get("/rd/cube.obj");
+	cubeObj = (WorldObject*)malloc(sizeof(WorldObject));
+	cubeObj->pos = { 0,0,0,0 };
+	cubeObj->rot = { 0,0,0,0 };
+	cubeObj->scale = { .5,.5,.5,0 };
+	cubeObj->model = cube;
+	cubeObj->header = object_header;
 }
 
 void game_cxt_prep() {
@@ -164,36 +169,7 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
-
-	printf("pos in level space (%f, %f)\n", gstate->xpos, gstate->zpos);
-	printf("sonic turn degrees %i\n", gstate->sonic_turn_degrees);
-
-	vector_t scal = { 0.5,0.5,0.5,0.0 };
-
-	float x0 = 0.0, z0 = 0.0;
-
-	float objXpos = (x0 - gstate->xpos); 
-	float objYpos = 0.5;
-	float objZpos = (z0 - gstate->zpos);
-
-	float half = gstate->level_width / 2;
-
-	if (objXpos < (-1)*half) objXpos += gstate->level_width;
-	if (objXpos > half) objXpos -= gstate->level_width;
-
-	if (objZpos < (-1)*half) objZpos += gstate->level_width;
-	if (objZpos > half) objZpos -= gstate->level_width;
-
-	objXpos*=gstate->level_to_world_space;
-	objZpos *= gstate->level_to_world_space;
-	objZpos *= (-1);
-
-	point_t tran = { objXpos,objYpos,objZpos , 0 };
-	tran = rotateAlongY(tran, (-1)*gstate->sonic_turn_degrees);
-
-	//tran = { 0,0,0,0 };
-	vector_t rot = { 0.0, (-1)*gstate->sonic_turn_degrees, 0.0,  0 };
-	obj_render(cube, &object_header, tran, rot, scal);
+	world_object_render(cubeObj);
 
 	pvr_list_finish();
 
@@ -233,7 +209,8 @@ void game_cxt_cleanup() {
 	free(wnorms);
 	free(wtexs);
 
-	obj_cleanup(cube);
+	obj_cleanup(cubeObj->model);
+	free(cubeObj);
 
 	game_state_cleanup();
 }

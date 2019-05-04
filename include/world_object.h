@@ -24,6 +24,18 @@ typedef struct {
 	//Pointer to 3D model of object for rendering.
 	//Initializer of object responsible for its memory
 	ObjModel* model;
+
+	//Compiled texture header for this object
+	pvr_poly_hdr_t header;
 } WorldObject;
+
+/*
+Wrapper over obj_render that renders an object with
+the proper world transformations. Uses gstate to determine
+correct translation and rotation.
+
+@param wobj The world object to render
+*/
+void world_object_render(WorldObject* wobj);
 
 #endif
