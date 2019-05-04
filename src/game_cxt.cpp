@@ -2,6 +2,7 @@
 #include "obj_model.h"
 #include "obj_renderer.h"
 #include "level_data.h"
+#include "world_object.h"
 
 // WORLD GLOBALS
 WorldVA* world;
@@ -26,15 +27,13 @@ vector_t** trans;
 // Locations of spheres
 //vector_t** sphereLocations;
 
-ObjModel* cube;
-vector_t cubePos;
-
-float deg;
+WorldObject* cubeObj;
 
 LevelData_t* lebel;
 vector_t**	 obj_ofsts;
 
 pvr_poly_hdr_t nontextured_header;
+pvr_poly_hdr_t object_header;
 
 pvr_poly_hdr_t textured_header;
 pvr_ptr_t floor_tex;
@@ -45,20 +44,30 @@ void floor_tex_init() {
 }
 
 void game_cxt_init() {
+	game_state_init();
+
 	floor_tex_init();
 
 	// Setup Parallax Polygon Headers
-	nontextured_header = create_nontextured_header();
-	textured_header = create_textured_header(floor_tex, 512, 512);
+	nontextured_header = create_nontextured_header(true);
 
-	deg = (90.0f / turn_rate);
+	object_header = create_nontextured_header(false);
+
+	textured_header = create_textured_header(floor_tex, 512, 512);
 
 #ifdef DEBUG_GAME
 
 	lebel   = read_level("/rd/test_level");
-	obj_dim = lebel->obj_dim;
-	xpos    = obj_dim / 2;
-	zpos    = obj_dim / 2;
+	gstate->level_width = lebel->obj_dim;
+
+	//cast to int to round down to a grid location.
+	//TODO: add a start point/direction to level file format
+	gstate->xpos    = (int)gstate->level_width / 2;
+	gstate->zpos    = (int)gstate->level_width / 2;
+
+	//set width of plane, and determine scale of level space to world space
+	gstate->display_plane_width = lebel->wo->size;
+	gstate->level_to_world_space = (gstate->display_plane_width) / (gstate->level_width);
 
 #endif
 
@@ -104,16 +113,19 @@ void game_cxt_init() {
 	}
 
 	//globals
-	cube = obj_get("/rd/cube.obj");
-	cubePos = { 0,0,0,1 };
+	ObjModel* cube = obj_get("/rd/cube.obj");
+	cubeObj = (WorldObject*)malloc(sizeof(WorldObject));
+	cubeObj->pos = { 0,0,0,0 };
+	cubeObj->rot = { 0,0,0,0 };
+	cubeObj->scale = { .5,.5,.5,0 };
+	cubeObj->model = cube;
+	cubeObj->header = object_header;
 }
 
 void game_cxt_prep() {
 	//plx_mat_identity();
 	//plx_mat3d_apply_all();
 }
-
-int curr_turn = 0;
 
 void game_cxt_render() {
 	pvr_list_begin(PVR_LIST_OP_POLY);
@@ -122,13 +134,20 @@ void game_cxt_render() {
 	vector_t n = {0,0,0,0};
 
 	//TODO: May want to consolidate some of these loops
-	if (turning) {
-		if (left) curr_turn += deg;
-		else	 curr_turn -= deg;
+	if (gstate->turning) {
+		//Turn plane RIGHT if sonic turning left. LEFT if sonic turning right
+		if (gstate->left) {
+			gstate->sonic_turn_degrees -= gstate->turn_degrees_per_frame;
+			gstate->sonic_direction = rotateAlongY(gstate->sonic_direction, (-1)*gstate->turn_degrees_per_frame);
+		}
+		else {
+			gstate->sonic_turn_degrees += gstate->turn_degrees_per_frame;
+			gstate->sonic_direction = rotateAlongY(gstate->sonic_direction, gstate->turn_degrees_per_frame);
+		}
 	}
 	plx_mat3d_push();
 	plx_mat_identity();
-	plx_mat3d_rotate((float)curr_turn, 0.0f, 1.0f, 0.0f);
+	plx_mat3d_rotate((float)gstate->sonic_turn_degrees, 0.0f, 1.0f, 0.0f);
 	plx_mat_identity();
 	plx_mat3d_apply_all();
 	
@@ -138,8 +157,8 @@ void game_cxt_render() {
 
 	plx_mat3d_pop();
 
-	if (curr_turn % 90 == 0 && turning) {
-		turning = false;
+	if (gstate->sonic_turn_degrees % 90 == 0 && gstate->turning) {
+		gstate->turning = false;
 	}
 
 
@@ -150,26 +169,26 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
-	//obj_render(cube, &nontextured_header);
+	world_object_render(cubeObj);
 
 	pvr_list_finish();
 
-	if (!turning) {
+	if (!gstate->turning) {
 		update_pos();
 		for (unsigned i = 0; i < stripn; ++i) {
 			for (unsigned j = 0; j < strips - 1; ++j) {
-				switch (curr_dir) {
+				switch (gstate->curr_dir) {
 				case NORTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y - (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].y = fmod((wtexs[i][j].y - (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case SOUTH:
-					wtexs[i][j].y = fmod((wtexs[i][j].y + (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].y = fmod((wtexs[i][j].y + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case EAST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x - (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x + (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				case WEST:
-					wtexs[i][j].x = fmod((wtexs[i][j].x + (speed * base_velocity)), (float)lebel->wo->size);
+					wtexs[i][j].x = fmod((wtexs[i][j].x - (gstate->speed * gstate->level_to_world_space)), (float)lebel->wo->size);
 					break;
 				}
 			}
@@ -190,5 +209,8 @@ void game_cxt_cleanup() {
 	free(wnorms);
 	free(wtexs);
 
-	obj_cleanup(cube);
+	obj_cleanup(cubeObj->model);
+	free(cubeObj);
+
+	game_state_cleanup();
 }

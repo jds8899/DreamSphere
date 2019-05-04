@@ -1,39 +1,61 @@
 #include "game_logic.h"
 
-direction_t curr_dir = NORTH;
-float speed   = .1;
-bool turning  = false;
-bool left     = false;
-float obj_dim = 0.0f;
-float xpos    = 0.0f;
-float zpos    = 0.0f;
+GameState* gstate = 0;
+
+void game_state_init()
+{
+	gstate = (GameState*) malloc(sizeof(GameState));
+
+	gstate->curr_dir = NORTH;
+	gstate->sonic_direction = { 0.0, 0.0, 1.0, 0.0 }; //Initially "north", along +z axis
+	gstate->sonic_turn_degrees = 0;
+	gstate->speed = .1;
+	gstate->turning = false;
+	gstate->left = false;
+	gstate->jumping = false;
+	gstate->xpos = 0.0f;
+	gstate->zpos = 0.0f;
+
+	gstate->turn_rate = 30;
+	gstate->turn_degrees_per_frame = (90.0f / gstate->turn_rate);
+
+	gstate->level_width = 0.0f;
+	gstate->display_plane_width = 0.0f;
+	gstate->level_to_world_space = 0.0f;
+}
+
+void game_state_cleanup()
+{
+	free(gstate);
+}
 
 void turn(int direction) {
-	left = (direction == LEFT) ? true : false;
-	curr_dir = (direction_t)((int)curr_dir + direction);
-	if((int)curr_dir == -1) curr_dir = WEST;
-	curr_dir = (direction_t)((int)curr_dir % (int)END);
-	turning = true;
+	gstate->left = (direction == LEFT) ? true : false;
+	gstate->curr_dir = (direction_t)((int)gstate->curr_dir + direction);
+	if((int)gstate->curr_dir == -1) gstate->curr_dir = WEST;
+	gstate->curr_dir = (direction_t)((int)gstate->curr_dir % (int)END);
+	gstate->turning = true;
 }
 
 void update_pos() {
-	float dist = (speed * base_velocity);
-	switch (curr_dir) {
+
+	switch (gstate->curr_dir) {
 	case NORTH:
-		zpos += dist;
+		gstate->zpos += gstate->speed;
 		break;
 	case SOUTH:
-		zpos -= dist;
+		gstate->zpos -= gstate->speed;
 		break;
 	case EAST:
-		xpos += dist;
+		gstate->xpos += gstate->speed;
 		break;
 	case WEST:
-		xpos -= dist;
+		gstate->xpos -= gstate->speed;
 		break;
 	}
-	if (zpos < 0)  zpos += 30;
-	if (zpos > 30) zpos -= 30;
-	if (xpos < 0)  xpos += 30;
-	if (xpos > 30) xpos -= 30;
+
+	if (gstate->zpos < 0)  gstate->zpos += gstate->level_width;
+	if (gstate->zpos > gstate->level_width) gstate->zpos -= gstate->level_width;
+	if (gstate->xpos < 0)  gstate->xpos += gstate->level_width;
+	if (gstate->xpos > gstate->level_width) gstate->xpos -= gstate->level_width;
 }

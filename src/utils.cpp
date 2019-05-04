@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <math.h>
 
 void vertex_submit_black(vector_t light, vector_t light_vert, vector_t vert, vector_t norm, vector_t tex, bool eos) {
 	int flags = eos ? PVR_CMD_VERTEX_EOL : PVR_CMD_VERTEX;
@@ -40,11 +41,20 @@ void vertex_submit(vector_t light, vector_t light_vert, vector_t vert, vector_t 
 	plx_vert_ffp(flags, vert.x, vert.y, vert.z, 1, 1, 1, 1, tex.x, tex.y);
 }
 
-pvr_poly_hdr_t create_nontextured_header() {
+pvr_poly_hdr_t create_nontextured_header(bool clockwise) {
 	pvr_poly_hdr_t nontextured_header;
 	pvr_poly_cxt_t nontextured_context;
 	pvr_poly_cxt_col(&nontextured_context, PVR_LIST_OP_POLY);
-	nontextured_context.gen.culling = PVR_CULLING_CCW;
+	
+	//Set order faces display in. If clockwise=true, display faces in clockwise
+	//order for renderer. For clockwise=false, display in counterclockwise order (as with traditional opengl)
+	if (clockwise) {
+		nontextured_context.gen.culling = PVR_CULLING_CCW;
+	}
+	else {
+		nontextured_context.gen.culling = PVR_CULLING_CW;
+	}
+	
 	pvr_poly_compile(&nontextured_header, &nontextured_context);
 	return nontextured_header;
 }
@@ -67,4 +77,14 @@ int floor(float x) {
 
 float fmod(float a, float b) {
 	return (a - b * (float)floor(a / b));
+}
+
+vector_t rotateAlongY(vector_t vec, float degrees)
+{
+	double rads = (M_PI / 180.0) * degrees;
+
+	double xRot = (cos(rads) * vec.x) - (sin(rads) * vec.z);
+	double zRot = (sin(rads) * vec.x) + (cos(rads) * vec.z);
+
+	return { xRot, vec.y, zRot, vec.w };
 }

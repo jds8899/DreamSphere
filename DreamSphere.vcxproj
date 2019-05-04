@@ -161,6 +161,7 @@
     <ClInclude Include="include\pause_cxt.h" />
     <ClInclude Include="include\utils.h" />
     <ClInclude Include="include\vertex.h" />
+    <ClInclude Include="include\world_object.h" />
     <ClInclude Include="include\world_options.h" />
     <ClInclude Include="include\world_va.h" />
     <ClInclude Include="include\tinyobj_loader_c.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="src\tinyobj_loader_c.cpp" />
     <ClCompile Include="src\utils.cpp" />
     <ClCompile Include="src\vertex.cpp" />
+    <ClCompile Include="src\world_object.cpp" />
     <ClCompile Include="src\world_options.cpp" />
     <ClCompile Include="src\world_va.cpp" />
   </ItemGroup>
