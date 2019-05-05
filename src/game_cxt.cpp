@@ -122,7 +122,7 @@ void game_cxt_init() {
 			if (lebel->layout[i][j] != NONE) {
 				WorldObject* new_obj;
 				new_obj = (WorldObject*)malloc(sizeof(WorldObject));
-				new_obj->pos = { i,0.5,lw-j,0 };
+				new_obj->pos = { j,0.5,i,0 };
 				new_obj->rot = { 0,0,0,0 };
 				//new_obj->scale = { .25,.25,.25,0 };
 				new_obj->scale = { gstate->level_to_world_space/2,gstate->level_to_world_space/2,gstate->level_to_world_space/2,0 };
