@@ -40,9 +40,11 @@ void init() {
 	plx_mat3d_mode(PLX_MAT_MODELVIEW);
 	plx_mat3d_identity();
 
+	/*
 	point_t  camera_pos	= {0.0f, 1.0f, 5.0f, 1.0f};
 	point_t  lookat		= {0.0f, 0.0f, 0.0f, 1.0f};
 	vector_t up			= {0.0f, 1.0f, 0.0f, 0.0f};
+	*/
 
 	//test diagonal view downward of plane/cube
 	/*point_t  camera_pos = { 0.0f, 5.0f, 5.0f, 1.0f };
@@ -50,9 +52,9 @@ void init() {
 	vector_t up = { 0.0f, 1.0f, -1.0f, 0.0f };*/
 
 	//test cam pos from above
-	/*point_t  camera_pos = { 0.0f, 20.0f, 0.0f, 1.0f };
+	point_t  camera_pos = { 0.0f, 20.0f, 0.0f, 1.0f };
 	point_t  lookat = { 0.0f, 0.0f, 0.0f, 1.0f };
-	vector_t up = { 0.0f, 0.0f, -1.0f, 0.0f };*/
+	vector_t up = { 0.0f, 0.0f, -1.0f, 0.0f };
 	plx_mat3d_lookat(&camera_pos, &lookat, &up);
 
 #ifdef DEBUG_GAME
