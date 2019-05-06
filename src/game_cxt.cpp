@@ -22,7 +22,7 @@ vector_t** trans;
 //#define SPHERE_MODEL 1
 
 // Loaded OBJ models. Can be reused to display multiple objects, perhaps?
-//ObjModel** loadedModels;
+WorldObject*** level_obj;
 
 // Locations of spheres
 //vector_t** sphereLocations;
@@ -114,12 +114,24 @@ void game_cxt_init() {
 
 	//globals
 	ObjModel* cube = obj_get("/rd/cube.obj");
-	cubeObj = (WorldObject*)malloc(sizeof(WorldObject));
-	cubeObj->pos = { 0,0,0,0 };
-	cubeObj->rot = { 0,0,0,0 };
-	cubeObj->scale = { .5,.5,.5,0 };
-	cubeObj->model = cube;
-	cubeObj->header = object_header;
+	int lw = (int)gstate->level_width;
+	level_obj = (WorldObject***)malloc(sizeof(WorldObject**) * lw);
+	for (int i = 0; i < lw; ++i) {
+		level_obj[i] = (WorldObject**)malloc(sizeof(WorldObject*) * lw);
+		for (int j = 0; j < lw; ++j) {
+			if (lebel->layout[i][j] != NONE) {
+				WorldObject* new_obj;
+				new_obj = (WorldObject*)malloc(sizeof(WorldObject));
+				new_obj->pos = { j,0.5,i,0 };
+				new_obj->rot = { 0,0,0,0 };
+				//new_obj->scale = { .25,.25,.25,0 };
+				new_obj->scale = { gstate->level_to_world_space/2,gstate->level_to_world_space/2,gstate->level_to_world_space/2,0 };
+				new_obj->model = cube;
+				new_obj->header = object_header;
+				level_obj[i][j] = new_obj;
+			}
+		}
+	}
 }
 
 void game_cxt_prep() {
@@ -169,7 +181,14 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
-	world_object_render(cubeObj);
+	int lw = (int)gstate->level_width;
+	for (int i = 0; i < lw; ++i) {
+		for (int j = 0; j < lw; ++j) {
+			if (lebel->layout[i][j] != NONE) {
+				world_object_render(level_obj[i][j]);
+			}
+		}
+	}
 
 	pvr_list_finish();
 

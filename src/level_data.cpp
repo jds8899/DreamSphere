@@ -45,6 +45,15 @@ LevelData_t* read_level(const char* path) {
 			}
 			ret->layout[i][j] = obj;
 		}
+		fscanf(f, "%c", &read); // Read newline and carriage return
+		fscanf(f, "%c", &read); // Get rid of one of these if not using windows line ends
+	}
+
+	for (int i = 0; i < obj_dim; ++i) {
+		for (int j = 0; j < obj_dim; ++j) {
+			printf("%d ", ret->layout[i][j]);
+		}
+		printf("\n");
 	}
 
 	return ret;
