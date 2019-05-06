@@ -64,14 +64,14 @@ void obj_render(ObjModel* obj, pvr_poly_hdr_t* hdr, point_t trans, vector_t rota
 	//new PLX matrix
 	plx_mat3d_push();
 
-	//Matrices applied in reverse order. Scale, rotate, then translate.
-	//Translation happens last because it messes up rotation if done first
-
-	plx_mat3d_translate(trans.x, trans.y, trans.z);
+	//Matrices applied in reverse order. Scale, translate, then rotate.
+	//Rotation done last to provide smooth rotation when sonic turns.
 
 	plx_mat3d_rotate(rotate.x, 1, 0, 0);
 	plx_mat3d_rotate(rotate.y, 0, 1, 0);
 	plx_mat3d_rotate(rotate.z, 0, 0, 1);
+
+	plx_mat3d_translate(trans.x, trans.y, trans.z);
 
 	plx_mat3d_scale(scale.x, scale.y, scale.z);
 

@@ -30,12 +30,8 @@ void world_object_render(WorldObject* wobj)
 	objZpos *= gstate->level_to_world_space;
 	objZpos *= (-1);
 
-	//Orient position and rotation to coincide with sonic's current rotation.
-	//(Not sure why degrees have to be inverted but it works so we take those)
 	point_t tran = { objXpos,objYpos,objZpos , 0 };
-	tran = rotateAlongY(tran, (-1)*gstate->sonic_turn_degrees);
-
-	vector_t rot = { wobj->rot.x, wobj->rot.y + (-1)*gstate->sonic_turn_degrees, wobj->rot.z,  0 };
+	vector_t rot = { wobj->rot.x, wobj->rot.y + gstate->sonic_turn_degrees, wobj->rot.z,  0 };
 
 	obj_render(wobj->model, &(wobj->header), tran, rot, wobj->scale);
 }
