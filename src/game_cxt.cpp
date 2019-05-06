@@ -4,7 +4,8 @@
 #include "level_data.h"
 #include "world_object.h"
 
-#define TEAPOT
+//#define TEAPOT
+#define SONICFACE
 
 // WORLD GLOBALS
 WorldVA* world;
@@ -60,7 +61,14 @@ void game_cxt_init() {
 
 #ifdef DEBUG_GAME
 
-	lebel   = read_level("/rd/test_level");
+#ifdef SONICFACE
+	lebel   = read_level("/rd/sonicfacelevel");
+#endif
+
+#ifndef SONICFACE
+	lebel = read_level("/rd/test_level");
+#endif
+
 	gstate->level_width = lebel->obj_dim;
 
 	//cast to int to round down to a grid location.
@@ -127,7 +135,7 @@ void game_cxt_init() {
 			if (lebel->layout[i][j] != NONE) {
 				WorldObject* new_obj;
 				new_obj = (WorldObject*)malloc(sizeof(WorldObject));
-				new_obj->pos = { j,0.5,i,0 };
+				new_obj->pos = { j,0.5,lw-i,0 };
 				new_obj->rot = { 0,0,0,0 };
 				//new_obj->scale = { .25,.25,.25,0 };
 				new_obj->scale = { gstate->level_to_world_space/2,gstate->level_to_world_space/2,gstate->level_to_world_space/2,0 };
