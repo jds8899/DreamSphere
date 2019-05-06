@@ -4,6 +4,8 @@
 #include "level_data.h"
 #include "world_object.h"
 
+#define TEAPOT
+
 // WORLD GLOBALS
 WorldVA* world;
 vector_t** wverts;
@@ -28,6 +30,7 @@ WorldObject*** level_obj;
 //vector_t** sphereLocations;
 
 WorldObject* cubeObj;
+WorldObject* teapot;
 
 LevelData_t* lebel;
 vector_t**	 obj_ofsts;
@@ -112,8 +115,10 @@ void game_cxt_init() {
 		}
 	}
 
-	//globals
 	ObjModel* cube = obj_get("/rd/cube.obj");
+	//globals
+#ifndef TEAPOT
+	
 	int lw = (int)gstate->level_width;
 	level_obj = (WorldObject***)malloc(sizeof(WorldObject**) * lw);
 	for (int i = 0; i < lw; ++i) {
@@ -132,6 +137,17 @@ void game_cxt_init() {
 			}
 		}
 	}
+#endif
+#ifdef TEAPOT
+	ObjModel* tea = obj_get("/rd/teapot-low.obj");
+	teapot = (WorldObject*)malloc(sizeof(WorldObject));
+	teapot->pos = { 0,10,0,0 };
+	teapot->rot = { 0,0,0,0 };
+	teapot->scale = { .25,.25,.25,0 };
+	teapot->model = tea;
+	teapot->header = object_header;
+
+#endif
 }
 
 void game_cxt_prep() {
@@ -181,6 +197,8 @@ void game_cxt_render() {
 		vertex_submit(n, n, trans[i][strips - 1], n, wtexs[i][strips - 1], true);
 	}
 
+#ifndef TEAPOT
+
 	int lw = (int)gstate->level_width;
 	for (int i = 0; i < lw; ++i) {
 		for (int j = 0; j < lw; ++j) {
@@ -189,6 +207,11 @@ void game_cxt_render() {
 			}
 		}
 	}
+#endif
+#ifdef TEAPOT
+	world_object_render(teapot);
+#endif // TEAPOT
+
 
 	pvr_list_finish();
 
@@ -230,6 +253,12 @@ void game_cxt_cleanup() {
 
 	obj_cleanup(cubeObj->model);
 	free(cubeObj);
+
+#ifdef TEAPOT
+	free(teapot->model);
+	free(teapot);
+#endif // TEAPOT
+
 
 	game_state_cleanup();
 }
